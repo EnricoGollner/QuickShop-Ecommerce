@@ -14,7 +14,7 @@ spring:
 
     cache:
       redis:
-        time-to-live: 60000
+        time-to-live: 60000 # 60 segundos
 
 basket:
   client:
