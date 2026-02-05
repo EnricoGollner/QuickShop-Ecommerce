@@ -13,8 +13,9 @@ services:
   redis:
     container_name: redis
     image: redis
+    command: redis-server --requirepass ${REDIS_PASSWORD}
     environment:
-      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_PASSWORD=sa
     ports:
       - '6379:6379'
 
