@@ -1,5 +1,6 @@
 package dev.enricogollner.basketservice.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,9 +8,10 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
+@Builder
 public class Product {
     private Long id;
     private String title;
-    private BigDecimal totalPrice;
+    private BigDecimal price;
     private Integer quantity;
 }
