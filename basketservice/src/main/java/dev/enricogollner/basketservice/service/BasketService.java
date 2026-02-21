@@ -2,6 +2,7 @@ package dev.enricogollner.basketservice.service;
 
 import dev.enricogollner.basketservice.client.response.PlatziProductResponse;
 import dev.enricogollner.basketservice.controller.request.BasketRequest;
+import dev.enricogollner.basketservice.controller.request.PaymentRequest;
 import dev.enricogollner.basketservice.entity.Basket;
 import dev.enricogollner.basketservice.entity.Product;
 import dev.enricogollner.basketservice.entity.Status;
@@ -73,5 +74,17 @@ public class BasketService {
 
         savedBasket.calculateTotalPrice();
         return repository.save(savedBasket);
+    }
+
+    public Basket payBasket(String id, PaymentRequest request) {
+        Basket savedBasket = getBasketById(id);
+        savedBasket.setPaymentMethod(request.getPaymentMethod());
+        savedBasket.setStatus(Status.SOLD);
+        return repository.save(savedBasket);
+    }
+
+    public void deleteBasket(String id) {
+        Basket basket = getBasketById(id);
+        repository.delete(basket);
     }
 }
