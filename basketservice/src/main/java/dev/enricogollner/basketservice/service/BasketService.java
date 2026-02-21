@@ -7,6 +7,7 @@ import dev.enricogollner.basketservice.entity.Product;
 import dev.enricogollner.basketservice.entity.Status;
 import dev.enricogollner.basketservice.repository.BasketRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class BasketService {
     private final ProductService productService;
 
     public Basket getBasketById(String id) {
-        return  repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Basket with id " + id + " not found"));
+        return repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Basket with id " + id + " not found"));
     }
 
     public Basket createBasket(BasketRequest request) {
@@ -42,7 +43,6 @@ public class BasketService {
 
         });
 
-
         Basket basket = Basket.builder()
                 .client(request.clientId())
                 .status(Status.OPEN)
@@ -53,4 +53,25 @@ public class BasketService {
         return repository.save(basket);
     }
 
+    public Basket updateBasket(String id, BasketRequest request) {
+        Basket savedBasket = getBasketById(id);
+
+        List<Product> products = savedBasket.getProducts();
+        request.products().forEach(productRequest -> {
+            PlatziProductResponse response = productService.getById(productRequest.id());
+            products.add(
+                    Product.builder()
+                            .id(response.id())
+                            .title(response.title())
+                            .price(response.price())
+                            .quantity(productRequest.quantity())
+                            .build()
+            );
+        });
+
+        savedBasket.setProducts(products);
+
+        savedBasket.calculateTotalPrice();
+        return repository.save(savedBasket);
+    }
 }

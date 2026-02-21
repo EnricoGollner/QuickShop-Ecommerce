@@ -15,12 +15,17 @@ public class BasketController {
     private final BasketService service;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Basket> getBasketById(@PathVariable String id) {
+    public ResponseEntity<Basket> getById(@PathVariable String id) {
         return ResponseEntity.ok(service.getBasketById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Basket> createBasket(@RequestBody BasketRequest request) {
+    public ResponseEntity<Basket> create(@RequestBody BasketRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createBasket(request));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Basket> update(@PathVariable String id, @RequestBody BasketRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.updateBasket(id, request));
     }
 }
